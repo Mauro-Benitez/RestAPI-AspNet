@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "kKvInrB+CUqzd9TVQB2A5htS2KD9Fnk/CsuZggmBOJI=",
+  "Source": "RestAPI-AspNet_Calculator",
+  "BasePath": "_content/RestAPI-AspNet_Calculator",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
