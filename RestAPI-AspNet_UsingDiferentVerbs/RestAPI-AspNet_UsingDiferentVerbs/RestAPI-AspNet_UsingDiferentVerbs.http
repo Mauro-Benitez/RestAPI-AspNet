@@ -1,0 +1,6 @@
+@RestAPI_AspNet_UsingDiferentVerbs_HostAddress = http://localhost:5239
+
+GET {{RestAPI_AspNet_UsingDiferentVerbs_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
