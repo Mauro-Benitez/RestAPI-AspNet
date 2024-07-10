@@ -1,11 +1,18 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using RestAPI_AspNet.Model;
 using RestAPI_AspNet.Services;
 
 namespace RestAPI_AspNet.Controllers
 {
+    //To Version our API
+    // https://github.com/microsoft/aspnet-api-versioning
+    // https://github.com/microsoft/aspnet-api-versioning/wiki/New-Services-Quick-Start#aspnet-core
+    // https://github.com/microsoft/aspnet-api-versioning/tree/master/samples/aspnetcore
+
+    [ApiVersion("1")]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/v{version:ApiVersion}")]
     public class PersonController : ControllerBase
     {
         
