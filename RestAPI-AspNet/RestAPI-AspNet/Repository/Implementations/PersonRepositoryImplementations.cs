@@ -3,16 +3,16 @@ using RestAPI_AspNet.Model;
 using RestAPI_AspNet.Model.Context;
 using System;
 
-namespace RestAPI_AspNet.Services.Implementations
+namespace RestAPI_AspNet.Repository.Implementations
 {
-    public class PersonServiceImplementations:IPersonService
+    public class PersonRepositoryImplementations:IPersonRepository
     {
 
        
         private MySQLContext _context;
 
 
-        public PersonServiceImplementations(MySQLContext context)
+        public PersonRepositoryImplementations(MySQLContext context)
         {
             _context = context;
         }
@@ -97,10 +97,10 @@ namespace RestAPI_AspNet.Services.Implementations
                     throw;
                 }
             }
-        }  
-                
+        }
 
-        private bool Exists(long Id)
+
+        public bool Exists(long Id)
         {
             return _context.Persons.Any(P => P.Id.Equals(Id));
         }

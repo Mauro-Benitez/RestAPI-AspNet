@@ -1,8 +1,8 @@
 ﻿using RestAPI_AspNet.Model;
 
-namespace RestAPI_AspNet.Services
+namespace RestAPI_AspNet.Business
 {
-    public interface IPersonService
+    public interface IPersonBusiness
     {
 
         Person Create(Person person);

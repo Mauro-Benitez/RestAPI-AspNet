@@ -1,7 +1,7 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using RestAPI_AspNet.Model;
-using RestAPI_AspNet.Services;
+using RestAPI_AspNet.Business;
 
 namespace RestAPI_AspNet.Controllers
 {
@@ -20,15 +20,15 @@ namespace RestAPI_AspNet.Controllers
         private readonly ILogger<PersonController> _logger;
 
         // Declaration of the service used
-        private IPersonService _personService;
+        private IPersonBusiness _personBusiness;
 
 
         // Injection of an instance of IPersonService
         // when creating an instance of PersonController
-        public PersonController(ILogger<PersonController> logger, IPersonService personService)
+        public PersonController(ILogger<PersonController> logger, IPersonBusiness personBusiness)
         {
             _logger = logger;
-            _personService = personService;
+            _personBusiness = personBusiness;
         }
 
 
@@ -38,7 +38,7 @@ namespace RestAPI_AspNet.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_personService.FindAll());
+            return Ok(_personBusiness.FindAll());
         }
 
 
@@ -49,7 +49,7 @@ namespace RestAPI_AspNet.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(long id)
         {
-            var person = _personService.FindById(id);
+            var person = _personBusiness.FindById(id);
 
             if (person == null)
             {
@@ -73,7 +73,7 @@ namespace RestAPI_AspNet.Controllers
                 return BadRequest();
             }
 
-            return Ok(_personService.Create(person));
+            return Ok(_personBusiness.Create(person));
 
         }
 
@@ -90,7 +90,7 @@ namespace RestAPI_AspNet.Controllers
                 return BadRequest();
             }
 
-            return Ok(_personService.Update(person));
+            return Ok(_personBusiness.Update(person));
 
         }
 
@@ -102,7 +102,7 @@ namespace RestAPI_AspNet.Controllers
         public IActionResult Delete(long id)
         {
 
-            _personService.Delete(id);
+            _personBusiness.Delete(id);
             return NoContent();
 
 
