@@ -7,6 +7,7 @@ using RestAPI_AspNet.Business.Implementations;
 using MySqlConnector;
 using Serilog;
 using EvolveDb;
+using RestAPI_AspNet.Repository.Generic;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,8 +34,12 @@ builder.Services.AddApiVersioning();
 
 
 //Dependency Injection
-builder.Services.AddScoped<IPersonRepository, PersonRepositoryImplementations>();
 builder.Services.AddScoped<IPersonBusiness, PersonBusinessImplementations>();
+
+
+builder.Services.AddScoped<IBookBusiness,  BookBusinessImplementations>();
+
+builder.Services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
 
 var app = builder.Build();
 

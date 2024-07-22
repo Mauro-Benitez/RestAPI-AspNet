@@ -1,72 +1,82 @@
-﻿using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using RestAPI_AspNet.Model;
+using RestAPI_AspNet.Model.Base;
 using RestAPI_AspNet.Model.Context;
+using RestAPI_AspNet.Repository.Generic;
 using System;
+using System.Data;
 
 namespace RestAPI_AspNet.Repository.Implementations
 {
-    public class PersonRepositoryImplementations:IPersonRepository
+    public class GenericRepository<T>: IRepository<T> where T : BaseEntity
     {
 
        
         private MySQLContext _context;
 
+        private DbSet<T> _dbSet;
 
-        public PersonRepositoryImplementations(MySQLContext context)
+
+
+        public GenericRepository(MySQLContext context)
         {
             _context = context;
+            _dbSet = _context.Set<T>();
         }
 
         // Method responsible for returning all people,
         // again this information is mocks
-        public List<Person> FindAll()
+        public List<T> FindAll()
         {
-            return _context.Persons.ToList();
+            return _dbSet.ToList();
         }
 
 
         // Method responsible for returning a person
         // as we have not accessed any database we are returning a mock
-        public Person FindById(long Id)
+        public T FindById(long Id)
         {
-            return _context.Persons.SingleOrDefault(p => p.Id.Equals(Id));
+            return _dbSet.SingleOrDefault(t => t.Id.Equals(Id));
+            
         }
 
 
         // Method responsible for creating a new person.
         // If we had a database this would be the time to persist the data
-        public Person Create(Person person)
+        public T Create(T item)
         {
             try
             {
-                _context.Add(person);
+                _dbSet.Add(item);
                 _context.SaveChanges();
+                return item;
             }
             catch (Exception ex)
             {
 
                 throw ;
             }
-
-            return person;
+           
         }
 
 
         // Method responsible for updating a person for
         // being mock we return the same information passed
-        public Person Update(Person person)
+        public T Update(T item)
         {
 
-            if (!Exists(person.Id)) return null;
-
-            var result = _context.Persons.SingleOrDefault(p => p.Id.Equals(person.Id));
+            
+            var result = _dbSet.SingleOrDefault(t => t.Id.Equals(item.Id));
 
             if (result != null)
             {
                 try
                 {
-                    _context.Entry(result).CurrentValues.SetValues(person);
+                    _context.Entry(result).CurrentValues.SetValues(item);
                     _context.SaveChanges();
+                    return result;
                 }
                 catch (Exception ex)
                 {
@@ -74,21 +84,24 @@ namespace RestAPI_AspNet.Repository.Implementations
                     throw;
                 }
             }
-
-            return person;
+            else
+            {
+                return null;
+            }
+           
         }
 
 
         // Method responsible for deleting a person from an ID
         public void Delete(long id)
         {
-            var result =  _context.Persons.SingleOrDefault(p => p.Id.Equals(id));
+            var result = _dbSet.SingleOrDefault(t => t.Id.Equals(id));
 
             if (result != null)
             {
                 try
                 {
-                    _context.Persons.Remove(result);
+                    _dbSet.Remove(result);
                     _context.SaveChanges();
                 }
                 catch (Exception ex)
@@ -97,15 +110,16 @@ namespace RestAPI_AspNet.Repository.Implementations
                     throw;
                 }
             }
+           
         }
 
 
-        public bool Exists(long Id)
+        public bool Exists(long id)
         {
-            return _context.Persons.Any(P => P.Id.Equals(Id));
+            return _dbSet.Any(t => t.Id.Equals(id));
         }
 
-       
-       
+
+
     }
 }

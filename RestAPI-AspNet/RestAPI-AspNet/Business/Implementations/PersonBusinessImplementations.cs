@@ -3,6 +3,7 @@ using RestAPI_AspNet.Business;
 using RestAPI_AspNet.Model;
 using RestAPI_AspNet.Model.Context;
 using RestAPI_AspNet.Repository;
+using RestAPI_AspNet.Repository.Generic;
 using System;
 
 namespace RestAPI_AspNet.Business.Implementations
@@ -11,17 +12,17 @@ namespace RestAPI_AspNet.Business.Implementations
     {
 
        
-       private readonly IPersonRepository _personRepository;
+        private  IRepository<Person> _personRepository;
 
 
 
-        public PersonBusinessImplementations(IPersonRepository repository)
+        public PersonBusinessImplementations(IRepository<Person> repository)
         {
             _personRepository = repository;
         }
 
         // Method responsible for returning all people,
-        // again this information is mocks
+       
         public List<Person> FindAll()
         {
             return _personRepository.FindAll();
