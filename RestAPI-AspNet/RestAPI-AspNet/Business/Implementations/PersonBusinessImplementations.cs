@@ -32,7 +32,7 @@ namespace RestAPI_AspNet.Business.Implementations
         {
             var personEntity = _personRepository.FindAll();
 
-            return _person.arse(personEntity);
+            return _person.Parse(personEntity);
         }
 
 
