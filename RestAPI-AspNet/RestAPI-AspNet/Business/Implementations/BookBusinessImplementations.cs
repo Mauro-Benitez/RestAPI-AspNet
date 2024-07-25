@@ -1,4 +1,6 @@
-﻿using RestAPI_AspNet.Model;
+﻿using RestAPI_AspNet.Data.Converter.Implementations;
+using RestAPI_AspNet.Data.VO;
+using RestAPI_AspNet.Model;
 using RestAPI_AspNet.Repository;
 using RestAPI_AspNet.Repository.Generic;
 
@@ -6,39 +8,53 @@ namespace RestAPI_AspNet.Business.Implementations
 {
     public class BookBusinessImplementations : IBookBusiness
     {
+        //DB
+        private readonly IRepository<Book> _repository;
 
-        private readonly IRepository<Book> _bookRepository;
+        //Value Object Converter
+        private readonly BookConverter _converter;
 
         public BookBusinessImplementations(IRepository<Book> bookRepository)
         {
-            _bookRepository = bookRepository;
+            _repository = bookRepository;
+            _converter = new BookConverter();
         }
 
-        public List<Book> FindAll()
+        public List<BookVO> FindAll()
         {
-            return _bookRepository.FindAll();
+            return _converter.Parse(_repository.FindAll());
         }
 
-        public Book FindById(long Id)
+        public BookVO FindById(long Id)
         {
-           return _bookRepository.FindById(Id);
+            return _converter.Parse(_repository.FindById(Id));
         }
 
 
-        public Book Create(Book book)
+        public BookVO Create(BookVO book)
         {
-            return _bookRepository.Create(book);
+            var bookEntity = _converter.Parse(book);
+            bookEntity = _repository.Create(bookEntity);
+
+
+            return _converter.Parse(bookEntity);
         }
 
         public void Delete(long id)
         {
-            _bookRepository.Delete(id);
+            _repository.Delete(id);
         }      
        
 
-        public Book Update(Book book)
+        public BookVO Update(BookVO book)
         {
-            return _bookRepository.Update(book);
+            var bookEntity = _converter.Parse(book);
+            bookEntity = _repository.Update(bookEntity);
+
+            return _converter.Parse(bookEntity);
+
         }
+
+       
     }
 }

@@ -10,10 +10,11 @@ using System.Data;
 
 namespace RestAPI_AspNet.Repository.Implementations
 {
+    //Repository Implementations
     public class GenericRepository<T>: IRepository<T> where T : BaseEntity
     {
 
-       
+       //db
         private MySQLContext _context;
 
         private DbSet<T> _dbSet;

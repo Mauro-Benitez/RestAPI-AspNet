@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using RestAPI_AspNet.Business;
+using RestAPI_AspNet.Data.Converter.Implementations;
+using RestAPI_AspNet.Data.VO;
 using RestAPI_AspNet.Model;
 using RestAPI_AspNet.Model.Context;
 using RestAPI_AspNet.Repository;
@@ -8,50 +10,67 @@ using System;
 
 namespace RestAPI_AspNet.Business.Implementations
 {
-    public class PersonBusinessImplementations: IPersonBusiness
+    public class PersonBusinessImplementations : IPersonBusiness
     {
 
-       
+        //DB
         private  IRepository<Person> _personRepository;
 
+        //Value Object Converter
+        private PersonConverter _person;
 
 
         public PersonBusinessImplementations(IRepository<Person> repository)
         {
             _personRepository = repository;
+            _person = new PersonConverter();
         }
 
         // Method responsible for returning all people,
        
-        public List<Person> FindAll()
+        public List<PersonVO> FindAll()
         {
-            return _personRepository.FindAll();
+            var personEntity = _personRepository.FindAll();
+
+            return _person.arse(personEntity);
         }
 
 
         // Method responsible for returning a person
-        // as we have not accessed any database we are returning a mock
-        public Person FindById(long Id)
+        
+        public PersonVO FindById(long Id)
         {
-            return _personRepository.FindById(Id);
+            var personEntity = _personRepository.FindById(Id);
+
+            return _person.Parse(personEntity);
+
+
         }
 
 
         // Method responsible for creating a new person.
         // If we had a database this would be the time to persist the data
-        public Person Create(Person person)
+        public PersonVO Create(PersonVO person)
         {
+            var personEntity = _person.Parse(person);
 
-            return _personRepository.Create(person); 
+            personEntity = _personRepository.Create(personEntity);
+
+            return _person.Parse(personEntity);
         }
+
+            
 
 
         // Method responsible for updating a person for
         // being mock we return the same information passed
-        public Person Update(Person person)
+        public PersonVO Update(PersonVO person)
         {
+            var personEntity = _person.Parse(person);
 
-           return _personRepository.Update(person); 
+            personEntity = _personRepository.Update(personEntity);
+
+            return _person.Parse(personEntity);
 
         }
 
@@ -60,11 +79,8 @@ namespace RestAPI_AspNet.Business.Implementations
         public void Delete(long id)
         {
             _personRepository.Delete(id);
-        }  
-                
+        }
 
-        
-       
-       
+      
     }
 }

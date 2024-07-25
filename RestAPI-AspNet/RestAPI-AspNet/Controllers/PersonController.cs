@@ -2,6 +2,7 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using RestAPI_AspNet.Model;
 using RestAPI_AspNet.Business;
+using RestAPI_AspNet.Data.VO;
 
 namespace RestAPI_AspNet.Controllers
 {
@@ -65,7 +66,7 @@ namespace RestAPI_AspNet.Controllers
         // Maps POST requests to https://localhost:{port}/api/person/
         // [FromBody] consumes the JSON object sent in the request body
         [HttpPost]
-        public IActionResult Post([FromBody] Person person)
+        public IActionResult Post([FromBody] PersonVO person)
         {
 
             if (person == null)
@@ -82,7 +83,7 @@ namespace RestAPI_AspNet.Controllers
         // Maps PUT requests to https://localhost:{port}/api/person/
         // [FromBody] consumes the JSON object sent in the request body
         [HttpPut]
-        public IActionResult Put([FromBody] Person person)
+        public IActionResult Put([FromBody] PersonVO person)
         {
 
             if (person == null)

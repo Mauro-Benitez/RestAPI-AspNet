@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RestAPI_AspNet.Business;
+using RestAPI_AspNet.Data.VO;
 using RestAPI_AspNet.Model;
 
 namespace RestAPI_AspNet.Controllers
@@ -40,7 +41,7 @@ namespace RestAPI_AspNet.Controllers
 
 
         [HttpPost]
-        public IActionResult Post([FromBody] Book book)
+        public IActionResult Post([FromBody] BookVO book)
         {
             if(book == null)
             {
@@ -53,7 +54,7 @@ namespace RestAPI_AspNet.Controllers
 
 
         [HttpPut]
-        public IActionResult Put([FromBody] Book book)
+        public IActionResult Put([FromBody] BookVO book)
         {
             if(book == null)
             {

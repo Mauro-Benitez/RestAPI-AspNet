@@ -1,14 +1,15 @@
 ﻿using RestAPI_AspNet.Model;
+using RestAPI_AspNet.Data.VO;
 
 namespace RestAPI_AspNet.Business
 {
     public interface IPersonBusiness
     {
 
-        Person Create(Person person);
-        Person FindById(long Id);
-        Person Update(Person person);
-        List<Person> FindAll();
+        PersonVO Create(PersonVO person);
+        PersonVO FindById(long Id);
+        PersonVO Update(PersonVO person);
+        List<PersonVO> FindAll();
         void Delete(long id);
 
     }
