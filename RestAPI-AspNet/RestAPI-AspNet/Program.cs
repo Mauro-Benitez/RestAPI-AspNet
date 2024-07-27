@@ -8,6 +8,9 @@ using MySqlConnector;
 using Serilog;
 using EvolveDb;
 using RestAPI_AspNet.Repository.Generic;
+using System.Net.Http.Headers;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +32,13 @@ if (builder.Environment.IsDevelopment())
     MigrateDatabase(connection);
 }
 
+builder.Services.AddMvc(options =>
+{
+    options.FormatterMappings.SetMediaTypeMappingForFormat("xml", "application/xml");
+    options.FormatterMappings.SetMediaTypeMappingForFormat("json", "application/json");
+})
+.AddXmlSerializerFormatters();
+
 //Versioning API
 builder.Services.AddApiVersioning();
 
@@ -42,6 +52,12 @@ builder.Services.AddScoped<IBookBusiness,  BookBusinessImplementations>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
 
 var app = builder.Build();
+
+
+
+
+
+
 
 // Configure the HTTP request pipeline.
 
