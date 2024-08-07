@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using RestAPI_AspNet.Model;
 using RestAPI_AspNet.Business;
 using RestAPI_AspNet.Data.VO;
+using RestAPI_AspNet.Hypermedia.Filters;
 
 namespace RestAPI_AspNet.Controllers
 {
@@ -37,6 +38,7 @@ namespace RestAPI_AspNet.Controllers
         // Maps GET requests to https://localhost:{port}/api/person
         // Get no parameters for FindAll -> Search All
         [HttpGet]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Get()
         {
             return Ok(_personBusiness.FindAll());
@@ -48,6 +50,7 @@ namespace RestAPI_AspNet.Controllers
         // receiving an ID as in the Request Path
         // Get with parameters for FindById -> Search by ID
         [HttpGet("{id}")]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Get(long id)
         {
             var person = _personBusiness.FindById(id);
@@ -66,6 +69,7 @@ namespace RestAPI_AspNet.Controllers
         // Maps POST requests to https://localhost:{port}/api/person/
         // [FromBody] consumes the JSON object sent in the request body
         [HttpPost]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Post([FromBody] PersonVO person)
         {
 
@@ -83,6 +87,7 @@ namespace RestAPI_AspNet.Controllers
         // Maps PUT requests to https://localhost:{port}/api/person/
         // [FromBody] consumes the JSON object sent in the request body
         [HttpPut]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Put([FromBody] PersonVO person)
         {
 

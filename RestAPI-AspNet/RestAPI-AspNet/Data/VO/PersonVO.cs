@@ -1,11 +1,13 @@
-﻿using RestAPI_AspNet.Model.Base;
+﻿using RestAPI_AspNet.Hypermedia;
+using RestAPI_AspNet.Hypermedia.Abstract;
+using RestAPI_AspNet.Model.Base;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RestAPI_AspNet.Data.VO
 {
 
-   
-    public class PersonVO 
+
+    public class PersonVO : ISupportsHyperMedia
     {
 
         public long Id { get; set; }
@@ -17,5 +19,7 @@ namespace RestAPI_AspNet.Data.VO
         public string Address { get; set; }
 
         public string Gender { get; set; }
+
+        public List<HyperMediaLink> Links { get; set; } = new List<HyperMediaLink>();
     }
 }

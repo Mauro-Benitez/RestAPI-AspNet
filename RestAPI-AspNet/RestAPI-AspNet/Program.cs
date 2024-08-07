@@ -9,6 +9,8 @@ using Serilog;
 using EvolveDb;
 using RestAPI_AspNet.Repository.Generic;
 using System.Net.Http.Headers;
+using RestAPI_AspNet.Hypermedia.Enricher;
+using RestAPI_AspNet.Hypermedia.Filters;
 
 
 
@@ -32,12 +34,21 @@ if (builder.Environment.IsDevelopment())
     MigrateDatabase(connection);
 }
 
+
+//Formatters XML and Json
 builder.Services.AddMvc(options =>
 {
     options.FormatterMappings.SetMediaTypeMappingForFormat("xml", "application/xml");
     options.FormatterMappings.SetMediaTypeMappingForFormat("json", "application/json");
 })
 .AddXmlSerializerFormatters();
+
+
+var filterOptions = new HyperMediaFilterOptions();
+filterOptions.ContentResponseEnricherList.Add(new PersonEnricher());
+filterOptions.ContentResponseEnricherList.Add(new BookEnricher());
+
+builder.Services.AddSingleton(filterOptions);
 
 //Versioning API
 builder.Services.AddApiVersioning();
@@ -66,6 +77,9 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapControllerRoute("DefaultApi", "{controller=values}/v{version=ApiVersion}/{id?}");
+
 
 app.Run();
 

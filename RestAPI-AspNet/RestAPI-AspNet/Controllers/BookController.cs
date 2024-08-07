@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using RestAPI_AspNet.Business;
 using RestAPI_AspNet.Data.VO;
 using RestAPI_AspNet.Model;
+using RestAPI_AspNet.Hypermedia.Filters;
 
 namespace RestAPI_AspNet.Controllers
 {
     [ApiVersion("1")]
-    [ApiController]    
+    [ApiController]
     [Route("api/[controller]/v{version:ApiVersion}")]
-
     public class BookController : ControllerBase
     {
        
@@ -28,19 +28,25 @@ namespace RestAPI_AspNet.Controllers
 
 
         [HttpGet]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Get()
         {
             return Ok(_bookBusiness.FindAll());
         }
 
         [HttpGet("{id}")]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Get(long id)
         {
-            return Ok(_bookBusiness.FindById(id));
+            var book = _bookBusiness.FindById(id);
+            if (book == null) return NotFound();
+            return Ok(book);
+
         }
 
 
         [HttpPost]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Post([FromBody] BookVO book)
         {
             if(book == null)
@@ -54,6 +60,7 @@ namespace RestAPI_AspNet.Controllers
 
 
         [HttpPut]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Put([FromBody] BookVO book)
         {
             if(book == null)
@@ -65,6 +72,7 @@ namespace RestAPI_AspNet.Controllers
         }
 
         [HttpDelete("{id}")]
+   
         public IActionResult Delete(long id)
         {
             _bookBusiness.Delete(id);
