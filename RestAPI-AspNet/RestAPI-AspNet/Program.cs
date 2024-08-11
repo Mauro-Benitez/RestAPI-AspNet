@@ -23,9 +23,19 @@ var appDescription = $"REST API RESTful developed in course '{appName}'";
 // Add services to the container.
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
+// Add Cors
+builder.Services.AddCors(options => options.AddDefaultPolicy(builder =>
+{
+    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyMethod();
+
+}));
+
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
+
+// Add Swagger
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc(appVersion,
@@ -41,14 +51,6 @@ builder.Services.AddSwaggerGen(c =>
             }
         });
 });
-
-
-
-
-
-
-
-
 
 
 // Configure Data base connection.
@@ -95,17 +97,14 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
 var app = builder.Build();
 
 
-
-
-
-
-
 // Configure the HTTP request pipeline.
 
 app.UseHttpsRedirection();
 
+//Configure Cors
+app.UseCors();
 
-//configure Swagger
+//Configure Swagger
 app.UseSwagger();
 
 app.UseSwaggerUI(c => {
