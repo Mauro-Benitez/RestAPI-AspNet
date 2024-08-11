@@ -11,14 +11,44 @@ using RestAPI_AspNet.Repository.Generic;
 using System.Net.Http.Headers;
 using RestAPI_AspNet.Hypermedia.Enricher;
 using RestAPI_AspNet.Hypermedia.Filters;
-
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Rewrite;
 
 
 var builder = WebApplication.CreateBuilder(args);
+var appName = "REST API's RESTful From 0 to Azure with ASP.NET Core 8 and Docker";
+var appVersion = "v1";
+var appDescription = $"REST API RESTful developed in course '{appName}'";
 
 // Add services to the container.
 
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddControllers();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc(appVersion,
+        new OpenApiInfo
+        {
+            Title = appName,
+            Version = appVersion,
+            Description = appDescription,
+            Contact = new OpenApiContact
+            {
+                Name = "Mauro Elias",
+                Url = new Uri("https://github.com/Mauro-Benitez")
+            }
+        });
+});
+
+
+
+
+
+
+
+
 
 
 // Configure Data base connection.
@@ -73,6 +103,19 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 
 app.UseHttpsRedirection();
+
+
+//configure Swagger
+app.UseSwagger();
+
+app.UseSwaggerUI(c => {
+    c.SwaggerEndpoint("/swagger/v1/swagger.json",
+        $"{appName} - {appName}");
+});
+
+var option = new RewriteOptions();
+option.AddRedirect("^$", "swagger");
+app.UseRewriter(option);
 
 app.UseAuthorization();
 
