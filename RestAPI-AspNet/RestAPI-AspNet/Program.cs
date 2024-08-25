@@ -13,6 +13,15 @@ using RestAPI_AspNet.Hypermedia.Enricher;
 using RestAPI_AspNet.Hypermedia.Filters;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using RestAPI_AspNet.Configuration;
+using System.Text;
+using RestAPI_AspNet.Services;
+using RestAPI_AspNet.Services.Implementations;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +32,47 @@ var appDescription = $"REST API RESTful developed in course '{appName}'";
 // Add services to the container.
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
+
+//token configuration
+
+var tokenConfigurations = new TokenConfiguration();
+
+new ConfigureFromConfigurationOptions<TokenConfiguration>(
+        builder.Configuration.GetSection("TokenConfigurations")
+    )
+    .Configure(tokenConfigurations);
+
+builder.Services.AddSingleton(tokenConfigurations);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = tokenConfigurations.Issuer,
+        ValidAudience = tokenConfigurations.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenConfigurations.Secret))
+    };
+});
+
+builder.Services.AddAuthorization(auth =>
+{
+    auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
+        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+        .RequireAuthenticatedUser().Build());
+});
+
+
+
 
 // Add Cors
 builder.Services.AddCors(options => options.AddDefaultPolicy(builder =>
@@ -91,6 +141,12 @@ builder.Services.AddScoped<IPersonBusiness, PersonBusinessImplementations>();
 
 
 builder.Services.AddScoped<IBookBusiness,  BookBusinessImplementations>();
+
+builder.Services.AddScoped<ILoginBusiness, LoginBusinessImplementation>();
+
+builder.Services.AddTransient<ITokenService, TokenService>();
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
 

@@ -12,7 +12,7 @@ namespace RestAPI_AspNet.Data.VO
     public class BookVO : ISupportsHyperMedia
     {
         [JsonPropertyName("Id")]
-        public long Id { get; set; }
+        public long Id { get; set; } 
 
         [JsonPropertyName("Autor")]
         public string Autor { get; set; }
