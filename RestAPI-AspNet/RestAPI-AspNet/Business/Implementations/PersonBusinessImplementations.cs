@@ -14,13 +14,13 @@ namespace RestAPI_AspNet.Business.Implementations
     {
 
         //DB
-        private  IRepository<Person> _personRepository;
+        private  IPersonRepository _personRepository;
 
         //Value Object Converter
         private PersonConverter _person;
 
 
-        public PersonBusinessImplementations(IRepository<Person> repository)
+        public PersonBusinessImplementations(IPersonRepository repository)
         {
             _personRepository = repository;
             _person = new PersonConverter();
@@ -73,7 +73,11 @@ namespace RestAPI_AspNet.Business.Implementations
             return _person.Parse(personEntity);
 
         }
-
+         public PersonVO Disable(long id)
+         {
+            var personEntity = _personRepository.Disable(id);
+            return _person.Parse(personEntity);
+         }
 
         // Method responsible for deleting a person from an ID
         public void Delete(long id)
@@ -81,6 +85,6 @@ namespace RestAPI_AspNet.Business.Implementations
             _personRepository.Delete(id);
         }
 
-      
+       
     }
 }

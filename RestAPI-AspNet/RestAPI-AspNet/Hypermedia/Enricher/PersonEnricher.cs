@@ -16,7 +16,7 @@ namespace RestAPI_AspNet.Hypermedia.Enricher
 
             string links = GetLink(content.Id, urlHelper, patch);
 
-            content.Links.Add(new HyperMediaLink
+            content.Links.Add(new HyperMediaLink()
             {
                 Action = HttpActionVerb.GET,
                 Href = links,
@@ -24,7 +24,7 @@ namespace RestAPI_AspNet.Hypermedia.Enricher
                 Type = ResponseTypeFormat.DefaultGet
             });
 
-            content.Links.Add(new HyperMediaLink
+            content.Links.Add(new HyperMediaLink()
             {
                 Action = HttpActionVerb.POST,
                 Href = links,
@@ -32,15 +32,22 @@ namespace RestAPI_AspNet.Hypermedia.Enricher
                 Type = ResponseTypeFormat.DefaultPost
             });
 
-            content.Links.Add(new HyperMediaLink
+            content.Links.Add(new HyperMediaLink()
             {
                 Action = HttpActionVerb.PUT,
                 Href = links,
                 Rel = RelationType.put,
                 Type = ResponseTypeFormat.DefaultPut
             });
+            content.Links.Add(new HyperMediaLink()
+            {
+                Action = HttpActionVerb.PATCH,
+                Href = links,
+                Rel = RelationType.self,
+                Type = ResponseTypeFormat.DefaultPatch
+            });
 
-            content.Links.Add(new HyperMediaLink
+            content.Links.Add(new HyperMediaLink()
             {
                 Action = HttpActionVerb.DELETE,
                 Href = links,

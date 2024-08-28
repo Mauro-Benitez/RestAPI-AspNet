@@ -15,7 +15,7 @@ namespace RestAPI_AspNet.Repository.Implementations
     {
 
        //db
-        private MySQLContext _context;
+        protected MySQLContext _context;
 
         private DbSet<T> _dbSet;
 
