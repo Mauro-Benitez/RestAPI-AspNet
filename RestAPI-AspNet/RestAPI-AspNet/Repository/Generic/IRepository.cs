@@ -11,6 +11,9 @@ namespace RestAPI_AspNet.Repository.Generic
         List<T> FindAll();
         void Delete(long id);
         bool Exists(long Id);
+        List<T> FindWitchPagedSearch(string query);
+        int GetCount(string query);
+
 
 
     }

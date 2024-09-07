@@ -19,7 +19,7 @@ namespace RestAPI_AspNet.Controllers
     [Route("api/[controller]/v{version:ApiVersion}")]
     public class PersonController : ControllerBase
     {
-        
+
 
         private readonly ILogger<PersonController> _logger;
 
@@ -39,11 +39,19 @@ namespace RestAPI_AspNet.Controllers
 
         // Maps GET requests to https://localhost:{port}/api/person
         // Get no parameters for FindAll -> Search All
-        [HttpGet]
+        [HttpGet("{sortDirection}/{pageSize}/{page}")]
+        [ProducesResponseType((200), Type = typeof(PersonVO))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [TypeFilter(typeof(HyperMediaFilter))]
-        public IActionResult Get()
+        public IActionResult Get(
+            [FromQuery] string? name,            
+            string sortDirection,
+            int pageSize,
+            int page)
         {
-            return Ok(_personBusiness.FindAll());
+            return Ok(_personBusiness.FindWithPagedSearch(name, sortDirection, pageSize,page));
         }
 
 
@@ -52,10 +60,35 @@ namespace RestAPI_AspNet.Controllers
         // receiving an ID as in the Request Path
         // Get with parameters for FindById -> Search by ID
         [HttpGet("{id}")]
-        [TypeFilter(typeof(HyperMediaFilter))]
+        [ProducesResponseType((200), Type = typeof(PersonVO))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         public IActionResult Get(long id)
         {
             var person = _personBusiness.FindById(id);
+
+            if (person == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(person);
+
+        }
+
+
+
+  
+        [HttpGet("findPersonByName")]
+        [ProducesResponseType((200), Type = typeof(PersonVO))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [TypeFilter(typeof(HyperMediaFilter))]
+        public IActionResult Get([FromQuery] string? firstName, [FromQuery] string? lastName)
+        {
+            var person = _personBusiness.FindByName(firstName, lastName);
 
             if (person == null)
             {

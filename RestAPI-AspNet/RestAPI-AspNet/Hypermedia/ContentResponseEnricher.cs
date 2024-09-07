@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Routing;
 using RestAPI_AspNet.Hypermedia.Abstract;
+using RestAPI_AspNet.Hypermedia.Utils;
 using System.Collections.Concurrent;
 using System.Xml.Linq;
 
@@ -19,7 +20,7 @@ namespace RestAPI_AspNet.Hypermedia
         //Verifica se o tipo do conteúdo é T ou uma lista de T
         public virtual bool CanEnricher(Type contentType)
         {
-            return contentType == typeof(T) || contentType == typeof(List<T>);
+            return contentType == typeof(T) || contentType == typeof(List<T>) || contentType == typeof(PagedSearchVO<T>);
         }
 
 
@@ -58,6 +59,16 @@ namespace RestAPI_AspNet.Hypermedia
                     ConcurrentBag<T> bag = new ConcurrentBag<T>(collection);
 
                     Parallel.ForEach(bag, (element) =>
+                    {
+                        EnrichModel(element, urlHelper);
+                    });
+
+                }
+                else if (okObjectResult.Value is PagedSearchVO<T> pageSearch)
+                {
+                    
+
+                    Parallel.ForEach(pageSearch.List.ToList(), (element) =>
                     {
                         EnrichModel(element, urlHelper);
                     });

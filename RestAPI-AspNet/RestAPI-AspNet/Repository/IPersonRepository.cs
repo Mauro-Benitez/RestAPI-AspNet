@@ -10,5 +10,8 @@ namespace RestAPI_AspNet.Repository
         Person Disable(long id);
 
 
+        List<Person>FindByName(string firstName, string lastName);
+
+
     }
 }

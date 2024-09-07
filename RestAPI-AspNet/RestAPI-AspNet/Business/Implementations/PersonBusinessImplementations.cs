@@ -2,6 +2,7 @@
 using RestAPI_AspNet.Business;
 using RestAPI_AspNet.Data.Converter.Implementations;
 using RestAPI_AspNet.Data.VO;
+using RestAPI_AspNet.Hypermedia.Utils;
 using RestAPI_AspNet.Model;
 using RestAPI_AspNet.Model.Context;
 using RestAPI_AspNet.Repository;
@@ -36,16 +37,59 @@ namespace RestAPI_AspNet.Business.Implementations
         }
 
 
+        public PagedSearchVO<PersonVO> FindWithPagedSearch(string name, string sortDirection, int pageSize, int page)
+        {
+            
+            var sort = (!string.IsNullOrWhiteSpace(sortDirection)) && !sortDirection.Equals("desc") ? "asc" : "desc";
+            var size = (pageSize < 1) ? 10 : pageSize;
+            var offset = page > 0 ? (page - 1) * size : 0;
+
+            string query = @"select * from person p where 1 = 1 ";
+
+
+            if (!string.IsNullOrWhiteSpace(name)) query = query + $" and p.first_Name like '%{name}%'";
+            query += $"order by p.first_Name {sort} limit {size} offset {offset}";      
+         
+            string countQuery = @"select count(*) from person p where 1 = 1 ";
+
+            if (!string.IsNullOrWhiteSpace(name)) countQuery = countQuery + $" and p.first_Name like '%{name}%'";
+
+            var persons = _personRepository.FindWitchPagedSearch(query);
+
+            int totalResult = _personRepository.GetCount(countQuery);
+
+
+            return new PagedSearchVO<PersonVO> {
+            CurrentPage = page,
+            List = _person.Parse(persons),
+            PageSize = size,
+            SortDirections = sort,
+            TotalResult = totalResult,
+
+            };
+        }
+
+
+
         // Method responsible for returning a person
-        
+
         public PersonVO FindById(long Id)
         {
             var personEntity = _personRepository.FindById(Id);
 
             return _person.Parse(personEntity);
+        }
 
+        // Method responsible for returning a person find by name
+        public List<PersonVO> FindByName(string firstName, string lastName)
+        {
+            var personEntity = _personRepository.FindByName(firstName, lastName); 
+
+            return _person.Parse(personEntity); 
 
         }
+
+
 
 
         // Method responsible for creating a new person.
@@ -85,6 +129,6 @@ namespace RestAPI_AspNet.Business.Implementations
             _personRepository.Delete(id);
         }
 
-       
+        
     }
 }

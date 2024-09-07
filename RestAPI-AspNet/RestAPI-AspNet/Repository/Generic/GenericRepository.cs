@@ -114,7 +114,6 @@ namespace RestAPI_AspNet.Repository.Implementations
            
         }
 
-
         public bool Exists(long id)
         {
             return _dbSet.Any(t => t.Id.Equals(id));
@@ -122,5 +121,30 @@ namespace RestAPI_AspNet.Repository.Implementations
 
 
 
+        public List<T> FindWitchPagedSearch(string query)
+        {
+            return _dbSet.FromSqlRaw<T>(query).ToList();
+        }
+
+
+        //Retorn um count 
+        public int GetCount(string query)
+        {
+            var result = "";
+
+            using (var connection = _context.Database.GetDbConnection())
+            {
+                connection.Open();
+                using(var command = connection.CreateCommand())
+                {
+                    command.CommandText = query;
+                    result = command.ExecuteScalar().ToString();
+
+                }
+            }
+
+
+            return int.Parse(result);
+        }
     }
 }
