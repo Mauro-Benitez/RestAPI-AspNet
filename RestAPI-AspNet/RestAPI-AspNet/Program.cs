@@ -22,6 +22,7 @@ using RestAPI_AspNet.Configuration;
 using System.Text;
 using RestAPI_AspNet.Services;
 using RestAPI_AspNet.Services.Implementations;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -137,18 +138,27 @@ builder.Services.AddApiVersioning();
 
 
 //Dependency Injection
-builder.Services.AddScoped<IPersonBusiness, PersonBusinessImplementations>();
 
+builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+builder.Services.AddScoped<IPersonBusiness, PersonBusinessImplementations>();
 
 builder.Services.AddScoped<IBookBusiness,  BookBusinessImplementations>();
 
 builder.Services.AddScoped<ILoginBusiness, LoginBusinessImplementation>();
+
+builder.Services.AddScoped<IFileBusiness, FileBusinessImplementations>();
 
 builder.Services.AddTransient<ITokenService, TokenService>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
+
+
+
+
+
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
 
