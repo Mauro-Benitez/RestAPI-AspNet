@@ -1,6 +1,6 @@
 # Nome do Projeto
 
-Criando uma API RESful com ASP.NET Core 8.0 e C#
+API RESful com ASP.NET Core 8.0 e C#
 
 ## Índice
 
