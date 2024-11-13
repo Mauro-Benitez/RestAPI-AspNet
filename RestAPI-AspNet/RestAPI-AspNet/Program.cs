@@ -26,7 +26,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 
 var builder = WebApplication.CreateBuilder(args);
-var appName = "REST API's RESTful From 0 to Azure with ASP.NET Core 8 and Docker";
+var appName = "REST API's RESTful";
 var appVersion = "v1";
 var appDescription = $"REST API RESTful developed in course '{appName}'";
 
